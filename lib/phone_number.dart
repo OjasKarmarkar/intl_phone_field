@@ -10,20 +10,22 @@ class PhoneNumber {
   String countryISOCode;
   String countryCode;
   String number;
+  String countryFlag;
 
   PhoneNumber({
     required this.countryISOCode,
     required this.countryCode,
     required this.number,
+    required this.countryFlag,
   });
 
-  factory PhoneNumber.fromCompleteNumber({required String completeNumber}) {
+  factory PhoneNumber.fromCompleteNumber({required String completeNumber , required String countryFlag}) {
     if (completeNumber == "") {
-      return PhoneNumber(countryISOCode: "", countryCode: "", number: "");
+      return PhoneNumber(countryISOCode: "", countryCode: "", number: "" , countryFlag: "");
     }
 
     try {
-      Country country = getCountry(completeNumber);
+      Country country = getCountry(completeNumber , countryFlag);
       String number;
       if (completeNumber.startsWith('+')) {
         number = completeNumber.substring(1 + country.dialCode.length + country.regionCode.length);
@@ -31,17 +33,17 @@ class PhoneNumber {
         number = completeNumber.substring(country.dialCode.length + country.regionCode.length);
       }
       return PhoneNumber(
-          countryISOCode: country.code, countryCode: country.dialCode + country.regionCode, number: number);
+          countryISOCode: country.code, countryCode: country.dialCode + country.regionCode, number: number, countryFlag: country.flag);
     } on InvalidCharactersException {
       rethrow;
       // ignore: unused_catch_clause
     } on Exception catch (e) {
-      return PhoneNumber(countryISOCode: "", countryCode: "", number: "");
+      return PhoneNumber(countryISOCode: "", countryCode: "", number: "", countryFlag: "");
     }
   }
 
   bool isValidNumber() {
-    Country country = getCountry(completeNumber);
+    Country country = getCountry(completeNumber , countryFlag);
     if (number.length < country.minLength) {
       throw NumberTooShortException();
     }
@@ -56,7 +58,7 @@ class PhoneNumber {
     return countryCode + number;
   }
 
-  static Country getCountry(String phoneNumber) {
+  static Country getCountry(String phoneNumber , String countryFlag) {
     if (phoneNumber == "") {
       throw NumberTooShortException();
     }
@@ -69,9 +71,9 @@ class PhoneNumber {
 
     if (phoneNumber.startsWith('+')) {
       return countries
-          .firstWhere((country) => phoneNumber.substring(1).startsWith(country.dialCode + country.regionCode));
+          .firstWhere((country) => phoneNumber.substring(1).startsWith(country.dialCode + country.regionCode) && country.flag == countryFlag);
     }
-    return countries.firstWhere((country) => phoneNumber.startsWith(country.dialCode + country.regionCode));
+    return countries.firstWhere((country) => phoneNumber.startsWith(country.dialCode + country.regionCode) && country.flag == countryFlag);
   }
 
   @override

@@ -338,6 +338,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
 
     if (widget.autovalidateMode == AutovalidateMode.always) {
       final initialPhoneNumber = PhoneNumber(
+        countryFlag: _selectedCountry.flag,
         countryISOCode: _selectedCountry.code,
         countryCode: '+${_selectedCountry.dialCode}',
         number: widget.initialValue ?? '',
@@ -407,6 +408,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
       onSaved: (value) {
         widget.onSaved?.call(
           PhoneNumber(
+            countryFlag: _selectedCountry.flag,
             countryISOCode: _selectedCountry.code,
             countryCode: '+${_selectedCountry.dialCode}${_selectedCountry.regionCode}',
             number: value!,
@@ -415,6 +417,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
       },
       onChanged: (value) async {
         final phoneNumber = PhoneNumber(
+          countryFlag: _selectedCountry.flag,
           countryISOCode: _selectedCountry.code,
           countryCode: '+${_selectedCountry.fullCountryCode}',
           number: value,
