@@ -6013,8 +6013,8 @@ const List<Country> countries = [
     flag: "🇷🇸",
     code: "RS",
     dialCode: "381",
-    minLength: 12,
-    maxLength: 12,
+    minLength: 7,
+    maxLength: 15,
   ),
   Country(
     name: "Seychelles",
